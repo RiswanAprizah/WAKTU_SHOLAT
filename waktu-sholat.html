@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waktu Sholat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Jost:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1F23;
+    --panel:#102C31;
+    --panel-2:#153A40;
+    --brass:#C9A24B;
+    --brass-bright:#EAC978;
+    --cream:#F3ECDD;
+    --muted:#7FA39C;
+    --line: rgba(201,162,75,0.22);
+    --shadow: 0 20px 60px rgba(0,0,0,0.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at 50% -10%, #163f45 0%, var(--ink) 55%);
+    color:var(--cream);
+    font-family:'Jost', sans-serif;
+    font-weight:400;
+    min-height:100vh;
+    padding:32px 18px 60px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;}
+
+  /* ---------- Header ---------- */
+  .top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+  }
+  .brand{display:flex;flex-direction:column;gap:2px;}
+  .brand .kicker{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--brass);
+  }
+  .brand h1{
+    font-family:'Amiri', serif;
+    font-weight:700;
+    font-size:34px;
+    margin:2px 0 0;
+    color:var(--cream);
+  }
+  .dates{
+    text-align:right;
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.6;
+    font-family:'Jost',sans-serif;
+  }
+  .dates .hijri{color:var(--brass-bright); font-weight:500;}
+
+  /* ---------- Location bar ---------- */
+  .locbar{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:6px 6px 6px 18px;
+    margin-bottom:26px;
+    flex-wrap:wrap;
+  }
+  .locbar svg{flex:none;color:var(--brass);}
+  .locbar input{
+    flex:1;
+    min-width:120px;
+    background:transparent;
+    border:none;
+    outline:none;
+    color:var(--cream);
+    font-family:'Jost',sans-serif;
+    font-size:14px;
+    padding:8px 0;
+  }
+  .locbar input::placeholder{color:var(--muted);}
+  .locbar button{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    border:none;
+    cursor:pointer;
+    border-radius:999px;
+    padding:10px 16px;
+    background:var(--brass);
+    color:#1A140A;
+    font-weight:700;
+    transition:transform .15s ease, background .15s ease;
+    white-space:nowrap;
+  }
+  .locbar button:hover{background:var(--brass-bright);}
+  .locbar button:active{transform:scale(0.96);}
+  .locbar .geo-btn{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--brass-bright);
+    padding:9px 12px;
+  }
+  .locbar .geo-btn:hover{background:var(--panel-2);}
+
+  /* ---------- Hero arch ---------- */
+  .arch-card{
+    position:relative;
+    background:linear-gradient(180deg, var(--panel-2) 0%, var(--panel) 100%);
+    border:1px solid var(--line);
+    border-radius:220px 220px 24px 24px;
+    padding:56px 28px 34px;
+    text-align:center;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+    margin-bottom:30px;
+  }
+  .arch-card::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:220px;
+    background:
+      repeating-conic-gradient(from 200deg at 50% 100%,
+        rgba(234,201,120,0.08) 0deg 4deg,
+        transparent 4deg 12deg);
+    -webkit-mask-image: radial-gradient(circle at 50% 100%, black 0%, black 60%, transparent 62%);
+    mask-image: radial-gradient(circle at 50% 100%, black 0%, black 60%, transparent 62%);
+    pointer-events:none;
+  }
+  .arch-kicker{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:var(--muted);
+    position:relative;
+  }
+  .arch-current{
+    font-family:'Amiri', serif;
+    font-weight:700;
+    font-size:44px;
+    color:var(--brass-bright);
+    margin:10px 0 4px;
+    position:relative;
+  }
+  .arch-sub{
+    font-size:14px;
+    color:var(--muted);
+    position:relative;
+    margin-bottom:22px;
+  }
+  .countdown{
+    font-family:'Space Mono', monospace;
+    font-size:48px;
+    font-weight:700;
+    letter-spacing:0.04em;
+    color:var(--cream);
+    position:relative;
+  }
+  .countdown-label{
+    font-size:12px;
+    color:var(--brass);
+    text-transform:uppercase;
+    letter-spacing:0.2em;
+    margin-top:6px;
+    position:relative;
+  }
+
+  /* ---------- Timeline of 5 prayers ---------- */
+  .timeline{
+    position:relative;
+    margin-bottom:26px;
+  }
+  .timeline-track{
+    width:100%;
+    height:40px;
+    display:block;
+  }
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:8px;
+    margin-top:-6px;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:16px 8px 14px;
+    text-align:center;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .card.past{opacity:0.5;}
+  .card.now{
+    background:linear-gradient(180deg, rgba(234,201,120,0.16), rgba(234,201,120,0.03));
+    border-color:var(--brass);
+  }
+  .card svg{width:22px;height:22px;color:var(--brass-bright); margin-bottom:8px;}
+  .card .name{
+    font-size:12.5px;
+    letter-spacing:0.03em;
+    color:var(--cream);
+    margin-bottom:4px;
+  }
+  .card .time{
+    font-family:'Space Mono', monospace;
+    font-size:15px;
+    color:var(--brass-bright);
+  }
+
+  /* ---------- Extra row: imsak / terbit ---------- */
+  .extras{
+    display:flex;
+    justify-content:center;
+    gap:26px;
+    font-size:12.5px;
+    color:var(--muted);
+    margin-bottom:34px;
+    font-family:'Space Mono', monospace;
+  }
+  .extras span b{color:var(--cream); font-weight:400;}
+
+  /* ---------- Qibla ---------- */
+  .qibla{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:20px 22px;
+  }
+  .qibla .compass{flex:none; width:78px; height:78px;}
+  .qibla-text .kicker{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.25em;
+    text-transform:uppercase;
+    color:var(--brass);
+    margin-bottom:6px;
+  }
+  .qibla-text .deg{
+    font-family:'Amiri', serif;
+    font-size:26px;
+    color:var(--cream);
+  }
+  .qibla-text .desc{font-size:12.5px; color:var(--muted); margin-top:2px;}
+
+  .status{
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+    padding:40px 0;
+  }
+  .status.error{color:#E0937A;}
+
+  footer{
+    text-align:center;
+    color:var(--muted);
+    font-size:11px;
+    margin-top:36px;
+    font-family:'Space Mono', monospace;
+    letter-spacing:0.04em;
+  }
+
+  @media (max-width:520px){
+    .cards{grid-template-columns:repeat(5,1fr);}
+    .card{padding:10px 4px 10px;}
+    .card .name{font-size:10.5px;}
+    .card .time{font-size:12.5px;}
+    .arch-current{font-size:32px;}
+    .countdown{font-size:36px;}
+    .dates{text-align:left;}
+    .top{flex-direction:column;}
+    .extras{gap:14px; flex-wrap:wrap;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    * {transition:none !important; animation:none !important;}
+  }
+
+  /* ============================================================
+     ✦  EFEK & ANIMASI KEREN
+     ============================================================ */
+
+  /* --- Aurora bercahaya di latar belakang --- */
+  body{
+    position:relative;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:-20% -20% auto -20%;
+    height:70vh;
+    background:
+      radial-gradient(40% 60% at 20% 30%, rgba(234,201,120,0.10), transparent 70%),
+      radial-gradient(45% 55% at 80% 20%, rgba(127,163,156,0.12), transparent 70%);
+    filter:blur(40px);
+    pointer-events:none;
+    z-index:0;
+    animation:auroraFloat 16s ease-in-out infinite alternate;
+  }
+  .wrap{position:relative; z-index:1;}
+  @keyframes auroraFloat{
+    0%   {transform:translate3d(0,0,0) scale(1);}
+    100% {transform:translate3d(0,24px,0) scale(1.08);}
+  }
+
+  /* --- Animasi masuk berurutan --- */
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(18px);}
+    to  {opacity:1; transform:translateY(0);}
+  }
+  .arch-card, .timeline, .extras, .qibla{
+    animation:fadeUp .7s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .timeline{animation-delay:.08s;}
+  .extras  {animation-delay:.16s;}
+  .qibla   {animation-delay:.24s;}
+  .card{
+    animation:fadeUp .6s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .card:nth-child(1){animation-delay:.10s;}
+  .card:nth-child(2){animation-delay:.16s;}
+  .card:nth-child(3){animation-delay:.22s;}
+  .card:nth-child(4){animation-delay:.28s;}
+  .card:nth-child(5){animation-delay:.34s;}
+
+  /* --- Judul waktu sekarang dengan kilau emas --- */
+  .arch-current{
+    background:linear-gradient(100deg,#EAC978 0%,#F3ECDD 30%,#C9A24B 55%,#F3ECDD 75%,#EAC978 100%);
+    background-size:220% auto;
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation:shine 5s linear infinite;
+  }
+  @keyframes shine{
+    to{background-position:220% center;}
+  }
+
+  /* --- Countdown berdenyut halus --- */
+  .countdown{
+    text-shadow:0 0 22px rgba(234,201,120,0.28);
+    animation:pulseGlow 2s ease-in-out infinite;
+  }
+  @keyframes pulseGlow{
+    0%,100%{text-shadow:0 0 18px rgba(234,201,120,0.18);}
+    50%    {text-shadow:0 0 30px rgba(234,201,120,0.42);}
+  }
+
+  /* --- Kartu sholat interaktif --- */
+  .card{will-change:transform;}
+  .card:hover{
+    transform:translateY(-4px);
+    border-color:var(--brass);
+    background:var(--panel-2);
+    box-shadow:0 12px 28px rgba(0,0,0,0.35);
+  }
+  .card svg{transition:transform .3s ease;}
+  .card:hover svg{transform:scale(1.15) translateY(-1px);}
+
+  /* --- Kartu waktu berjalan dengan cincin berdenyut --- */
+  .card.now{
+    position:relative;
+    animation:nowPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes nowPulse{
+    0%,100%{box-shadow:0 0 0 0 rgba(201,162,75,0.35);}
+    50%    {box-shadow:0 0 0 6px rgba(201,162,75,0);}
+  }
+
+  /* --- Panel kiblat dengan kilau tepi & kompas melayang --- */
+  .qibla{
+    position:relative;
+    overflow:hidden;
+    transition:border-color .3s ease, transform .3s ease;
+  }
+  .qibla::after{
+    content:"";
+    position:absolute;
+    top:-60%; left:-30%;
+    width:60%; height:220%;
+    background:linear-gradient(120deg, transparent, rgba(234,201,120,0.14), transparent);
+    transform:rotate(18deg);
+    animation:sweep 6s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes sweep{
+    0%,100%{left:-40%;}
+    50%    {left:120%;}
+  }
+  .qibla:hover{
+    border-color:var(--brass);
+    transform:translateY(-2px);
+  }
+  .qibla .compass{
+    filter:drop-shadow(0 0 8px rgba(234,201,120,0.35));
+    animation:floaty 4s ease-in-out infinite;
+  }
+  @keyframes floaty{
+    0%,100%{transform:translateY(0);}
+    50%    {transform:translateY(-4px);}
+  }
+
+  /* --- Tombol dengan efek kilau saat hover --- */
+  .locbar button{position:relative; overflow:hidden;}
+  .locbar button::before{
+    content:"";
+    position:absolute;
+    top:0; left:-120%;
+    width:60%; height:100%;
+    background:linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
+    transform:skewX(-20deg);
+    transition:left .5s ease;
+  }
+  .locbar button:hover::before{left:140%;}
+
+  /* --- Bar lokasi menyala saat fokus --- */
+  .locbar:focus-within{
+    border-color:var(--brass);
+    box-shadow:0 0 0 3px rgba(201,162,75,0.12);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="brand">
+      <span class="kicker">Waktu Sholat</span>
+      <h1 id="cityName">Memuat lokasi…</h1>
+    </div>
+    <div class="dates">
+      <div id="gregorian">—</div>
+      <div class="hijri" id="hijri">—</div>
+    </div>
+  </div>
+
+  <div class="locbar">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-7.1 7-12a7 7 0 1 0-14 0c0 4.9 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+    <input id="cityInput" type="text" placeholder="Cari kota, mis. Bandung" />
+    <button class="geo-btn" id="geoBtn" title="Gunakan lokasi saya">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="6"/></svg>
+    </button>
+    <button id="searchBtn">Cari</button>
+  </div>
+
+  <div id="content">
+    <div class="status" id="statusMsg">Mengambil waktu sholat…</div>
+  </div>
+
+  <footer>Perhitungan Kementerian Agama RI · via AlAdhan API</footer>
+</div>
+
+<script>
+const ICONS = {
+  imsak:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>`,
+  subuh:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v3M4.2 10.2l1.4 1.4M19.8 10.2l-1.4 1.4M2 17h20M5 17a7 7 0 0 1 14 0"/></svg>`,
+  terbit: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v4M4.9 8.9l1.4 1.4M19.1 8.9l-1.4 1.4M2 17h20M5 17a7 7 0 0 1 14 0M2 21h20"/></svg>`,
+  dzuhur: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2 2M17.1 17.1l2 2M4.9 19.1l2-2M17.1 6.9l2-2"/></svg>`,
+  ashar:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="14" r="4.2"/><path d="M12 4v2M4.9 9.9l1.4 1.4M19.1 9.9l-1.4 1.4M2 20h20"/></svg>`,
+  maghrib:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18h20M5 18a7 7 0 0 1 14 0M12 8v4M9.5 10.5 12 8l2.5 2.5"/></svg>`,
+  isya:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/><circle cx="17" cy="6" r="0.6" fill="currentColor"/><circle cx="19" cy="9" r="0.4" fill="currentColor"/></svg>`
+};
+
+const PRAYERS = [
+  {key:'Fajr',    label:'Subuh',   icon:'subuh'},
+  {key:'Dhuhr',   label:'Dzuhur',  icon:'dzuhur'},
+  {key:'Asr',     label:'Ashar',   icon:'ashar'},
+  {key:'Maghrib', label:'Maghrib', icon:'maghrib'},
+  {key:'Isha',    label:'Isya',    icon:'isya'}
+];
+
+const content = document.getElementById('content');
+const cityNameEl = document.getElementById('cityName');
+const gregorianEl = document.getElementById('gregorian');
+const hijriEl = document.getElementById('hijri');
+const cityInput = document.getElementById('cityInput');
+
+let countdownTimer = null;
+let currentTimings = null;
+
+function to24(t){ return t.split(' ')[0]; } // strip timezone suffix if any
+
+function parseTimeToday(hhmm){
+  const [h,m] = hhmm.split(':').map(Number);
+  const d = new Date();
+  d.setHours(h, m, 0, 0);
+  return d;
+}
+
+function fmtHMS(ms){
+  const total = Math.max(0, Math.floor(ms/1000));
+  const h = String(Math.floor(total/3600)).padStart(2,'0');
+  const m = String(Math.floor((total%3600)/60)).padStart(2,'0');
+  const s = String(total%60).padStart(2,'0');
+  return `${h}:${m}:${s}`;
+}
+
+function bearingToQibla(lat, lon){
+  const kLat = 21.4225 * Math.PI/180;
+  const kLon = 39.8262 * Math.PI/180;
+  const lat1 = lat * Math.PI/180;
+  const dLon = (kLon - lon * Math.PI/180);
+  const y = Math.sin(dLon) * Math.cos(kLat);
+  const x = Math.cos(lat1)*Math.sin(kLat) - Math.sin(lat1)*Math.cos(kLat)*Math.cos(dLon);
+  let brng = Math.atan2(y,x) * 180/Math.PI;
+  return (brng + 360) % 360;
+}
+
+function compassSVG(deg){
+  return `
+  <svg class="compass" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="46" fill="none" stroke="var(--line)" stroke-width="1.5"/>
+    <text x="50" y="14" text-anchor="middle" fill="var(--muted)" font-size="9" font-family="Space Mono">U</text>
+    <g transform="rotate(${deg} 50 50)">
+      <line x1="50" y1="50" x2="50" y2="14" stroke="var(--brass-bright)" stroke-width="2.5" stroke-linecap="round"/>
+      <polygon points="50,8 45,20 55,20" fill="var(--brass-bright)"/>
+      <circle cx="50" cy="50" r="3" fill="var(--brass)"/>
+    </g>
+  </svg>`;
+}
+
+function render(data, lat, lon){
+  currentTimings = data.timings;
+  const t = data.timings;
+
+  gregorianEl.textContent = data.date.readable;
+  const h = data.date.hijri;
+  hijriEl.textContent = `${h.day} ${h.month.en} ${h.year} H`;
+
+  const now = new Date();
+  const rows = PRAYERS.map(p => ({...p, time: to24(t[p.key]), dt: parseTimeToday(to24(t[p.key]))}));
+
+  let currentIdx = -1;
+  for(let i=0;i<rows.length;i++){
+    if(now >= rows[i].dt) currentIdx = i;
+  }
+  let nextIdx = currentIdx + 1;
+  let nextRow, nextIsTomorrowFajr = false;
+  if(nextIdx >= rows.length){
+    nextRow = rows[0];
+    nextIsTomorrowFajr = true;
+  } else {
+    nextRow = rows[nextIdx];
+  }
+
+  const currentLabel = currentIdx === -1 ? 'Sebelum Subuh' : rows[currentIdx].label;
+
+  const cardsHtml = rows.map((r,i) => {
+    let cls = 'card';
+    if(i < currentIdx) cls += ' past';
+    else if(i === currentIdx) cls += ' now';
+    return `<div class="${cls}">
+      ${ICONS[r.icon]}
+      <div class="name">${r.label}</div>
+      <div class="time">${r.time}</div>
+    </div>`;
+  }).join('');
+
+  // Arah kiblat dari Makassar ke Ka'bah
+  const MAKASSAR_LAT = -5.1477;
+  const MAKASSAR_LON = 119.4327;
+  const qDeg = bearingToQibla(MAKASSAR_LAT, MAKASSAR_LON);
+
+  content.innerHTML = `
+    <div class="arch-card">
+      <div class="arch-kicker">Sedang berlangsung</div>
+      <div class="arch-current">${currentLabel}</div>
+      <div class="arch-sub">Menuju waktu ${nextRow.label}${nextIsTomorrowFajr ? ' (besok)' : ''}</div>
+      <div class="countdown" id="countdown">00:00:00</div>
+      <div class="countdown-label">Hitung mundur</div>
+    </div>
+
+    <div class="timeline">
+      <div class="cards">${cardsHtml}</div>
+    </div>
+
+    <div class="extras">
+      <span>Imsak <b>${to24(t.Imsak)}</b></span>
+      <span>Terbit <b>${to24(t.Sunrise)}</b></span>
+    </div>
+
+    <div class="qibla">
+      ${compassSVG(qDeg)}
+      <div class="qibla-text">
+        <div class="kicker">Arah Kiblat · Makassar</div>
+        <div class="deg">${qDeg.toFixed(1)}°</div>
+        <div class="desc">dari Makassar ke Ka'bah, diukur dari arah Utara searah jarum jam</div>
+      </div>
+    </div>
+  `;
+
+  if(countdownTimer) clearInterval(countdownTimer);
+  const targetTime = nextIsTomorrowFajr
+    ? new Date(nextRow.dt.getTime() + 24*3600*1000)
+    : nextRow.dt;
+
+  function tick(){
+    const diff = targetTime - new Date();
+    const el = document.getElementById('countdown');
+    if(el) el.textContent = fmtHMS(diff);
+    if(diff <= 0){
+      clearInterval(countdownTimer);
+      fetchByCoords(lat, lon); // refresh to move to next prayer
+    }
+  }
+  tick();
+  countdownTimer = setInterval(tick, 1000);
+}
+
+function showStatus(msg, isError){
+  content.innerHTML = `<div class="status ${isError ? 'error' : ''}">${msg}</div>`;
+}
+
+async function fetchByCoords(lat, lon, label){
+  showStatus('Mengambil waktu sholat…');
+  try{
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2,'0');
+    const mm = String(today.getMonth()+1).padStart(2,'0');
+    const yyyy = today.getFullYear();
+    const url = `https://api.aladhan.com/v1/timings/${dd}-${mm}-${yyyy}?latitude=${lat}&longitude=${lon}&method=20`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('Gagal mengambil data');
+    const json = await res.json();
+    if(label) cityNameEl.textContent = label;
+    render(json.data, lat, lon);
+  }catch(err){
+    showStatus('Gagal memuat waktu sholat. Periksa koneksi internet Anda.', true);
+  }
+}
+
+async function fetchByCity(city){
+  showStatus('Mencari kota…');
+  try{
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2,'0');
+    const mm = String(today.getMonth()+1).padStart(2,'0');
+    const yyyy = today.getFullYear();
+    const url = `https://api.aladhan.com/v1/timingsByCity/${dd}-${mm}-${yyyy}?city=${encodeURIComponent(city)}&country=Indonesia&method=20`;
+    const res = await fetch(url);
+    const json = await res.json();
+    if(json.code !== 200) throw new Error('not found');
+    cityNameEl.textContent = city;
+    const lat = parseFloat(json.data.meta.latitude);
+    const lon = parseFloat(json.data.meta.longitude);
+    render(json.data, lat, lon);
+  }catch(err){
+    showStatus(`Kota "${city}" tidak ditemukan. Coba nama lain.`, true);
+  }
+}
+
+document.getElementById('searchBtn').addEventListener('click', () => {
+  const v = cityInput.value.trim();
+  if(v) fetchByCity(v);
+});
+cityInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){
+    const v = cityInput.value.trim();
+    if(v) fetchByCity(v);
+  }
+});
+document.getElementById('geoBtn').addEventListener('click', () => {
+  if(!navigator.geolocation){
+    showStatus('Geolokasi tidak didukung di perangkat ini.', true);
+    return;
+  }
+  showStatus('Meminta izin lokasi…');
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      cityNameEl.textContent = 'Lokasi Anda';
+      fetchByCoords(pos.coords.latitude, pos.coords.longitude);
+    },
+    () => {
+      showStatus('Izin lokasi ditolak. Coba cari nama kota di atas.', true);
+    }
+  );
+});
+
+// Initial load: try geolocation, fallback to Jakarta
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      cityNameEl.textContent = 'Lokasi Anda';
+      fetchByCoords(pos.coords.latitude, pos.coords.longitude);
+    },
+    () => {
+      cityNameEl.textContent = 'Jakarta';
+      fetchByCity('Jakarta');
+    },
+    { timeout: 6000 }
+  );
+} else {
+  cityNameEl.textContent = 'Jakarta';
+  fetchByCity('Jakarta');
+}
+</script>
+</body>
+</html>
